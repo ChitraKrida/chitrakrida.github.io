@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prison House of the Circuit</title>
+    <!-- React and Tailwind for a modern, responsive UI -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --accent-color: #22d3ee;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Lora', serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        /* Styling for the custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        .prose p { margin-bottom: 1.25rem; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Game State Constants ---
+        const INITIAL_STATE = {
+            disciplineWeight: 0,
+            controlWeight: 0,
+            biopoliticsWeight: 0,
+            trustInPolicing: 0,
+            skepticismOfPolicing: 0,
+            automobilityFlowWeight: 0,
+            automobilityPrivWeight: 0,
+            automobilityTechnoFixWeight: 0,
+            soldierDocilityWeight: 0,
+            soldierInterpretiveWeight: 0,
+            soldierAutomationWeight: 0,
+            madnessNormalizingWeight: 0,
+            madnessDataficationWeight: 0,
+            madnessAutomationWeight: 0,
+            madnessScenarioVisited: false,
+            policeScenarioVisited: false,
+            automobilityScenarioVisited: false,
+            soldierScenarioVisited: false
+        };
+
+        // --- UI Components ---
+        const Button = ({ onClick, children, className = "" }) => (
+            <button 
+                onClick={onClick}
+                className={`group w-full text-left p-5 my-3 border border-slate-700 bg-slate-900/40 hover:bg-slate-800 hover:border-cyan-500/50 transition-all rounded-lg shadow-lg ${className}`}
+            >
+                <span className="mr-3 text-cyan-500 group-hover:translate-x-1 inline-block transition-transform">→</span>
+                <span className="mono text-sm uppercase tracking-wider">{children}</span>
+            </button>
+        );
+
+        const Passage = ({ children }) => (
+            <div className="prose prose-invert prose-lg max-w-none mb-10 leading-relaxed fade-in text-slate-300">
+                {children}
+            </div>
+        );
+
+        const Highlight = ({ children, color = "text-cyan-400" }) => (
+            <strong className={`${color} font-bold tracking-tight`}>{children}</strong>
+        );
+
+        // --- Story Passage Mapping ---
+        const STORY = {
+            WorkshopSetup: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(INITIAL_STATE), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You arrive at a small seminar room on campus. Four unusual chairs are arranged around a central table facing a wall of projected diagrams.</p>
+                                <p className="italic text-slate-400 border-l-2 border-slate-700 pl-4">“This is a Media Genealogy Workshop,” the facilitator greets you. “You will sit in different chairs—soldier, police planner, driver, and screened subject—to experience how circuits of media and power shape movement, perception, and ‘madness’.”</p>
+                                <ul className="list-none space-y-3 mt-6 text-sm mono">
+                                    <li className="flex items-start"><span className="text-cyan-600 mr-2">/</span> Navigate vignettes to steer conceptual emphasis.</li>
+                                    <li className="flex items-start"><span className="text-cyan-600 mr-2">/</span> Your choices adjust hidden weights: Discipline, Control, Biopolitics.</li>
+                                    <li className="flex items-start"><span className="text-cyan-600 mr-2">/</span> Revisit chairs to reconfigure the circuits.</li>
+                                </ul>
+                            </Passage>
+                            <Button onClick={() => goTo("WorkshopHub")}>Take your seat</Button>
+                        </>
+                    );
+                }
+            },
+            WorkshopHub: {
+                content: ({ vars, goTo }) => {
+                    const readyForFinal = vars.soldierScenarioVisited || vars.policeScenarioVisited || vars.automobilityScenarioVisited || vars.madnessScenarioVisited;
+                    return (
+                        <>
+                            <Passage>
+                                <p>The Media Genealogy Workshop table is surrounded by four distinct interfaces. Each chair is tied to a circuit of media and power.</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                                    <div className="p-4 rounded border border-slate-800 bg-slate-900/20">
+                                        <Highlight>Soldier/Signaling</Highlight>
+                                        <p className="text-xs mt-2 text-slate-500 mono">Hills, flags, telegraphs, and the dream of disembodied command.</p>
+                                    </div>
+                                    <div className="p-4 rounded border border-slate-800 bg-slate-900/20">
+                                        <Highlight>Police</Highlight>
+                                        <p className="text-xs mt-2 text-slate-500 mono">Patrol routes, dashboards, and non-Euclidean urban grids.</p>
+                                    </div>
+                                    <div className="p-4 rounded border border-slate-800 bg-slate-900/20">
+                                        <Highlight>Automobility</Highlight>
+                                        <p className="text-xs mt-2 text-slate-500 mono">Private bubbles, commutes, and driverless futures.</p>
+                                    </div>
+                                    <div className="p-4 rounded border border-slate-800 bg-slate-900/20">
+                                        <Highlight>Madness/Screening</Highlight>
+                                        <p className="text-xs mt-2 text-slate-500 mono">Diagnostics, biometrics, and wearables in the sensor society.</p>
+                                    </div>
+                                </div>
+                            </Passage>
+                            <div className="space-y-1">
+                                <Button onClick={() => goTo("SoldierHubIntro")}>Take the Soldier Chair</Button>
+                                <Button onClick={() => goTo("PoliceHubIntro")}>Take the Police Chair</Button>
+                                <Button onClick={() => goTo("AutomobilityHubIntro")}>Take the Automobility Chair</Button>
+                                <Button onClick={() => goTo("MadnessHubIntro")}>Take the Madness Chair</Button>
+                            </div>
+                            {readyForFinal && (
+                                <div className="mt-12 pt-6 border-t border-slate-800">
+                                    <Button onClick={() => goTo("FinalSynthesis")} className="border-cyan-500/50 bg-cyan-950/20">Synthesize findings</Button>
+                                </div>
+                            )}
+                        </>
+                    );
+                }
+            },
+
+            // --- POLICE BRANCH ---
+            PoliceHubIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, policeScenarioVisited: true})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You take the <Highlight>Police Planner</Highlight> chair.</p>
+                                <p>The facilitator slides a city map across the table. Crime is unevenly distributed, and resources are finite. The goal is efficiency.</p>
+                                <p className="italic text-slate-400">“We’ll use this case to think about circuits of sovereignty, discipline, and control.”</p>
+                            </Passage>
+                            <Button onClick={() => goTo("PoliceMapView")}>Study the map</Button>
+                            <Button onClick={() => goTo("WorkshopHub")}>Return to Hub</Button>
+                        </>
+                    );
+                }
+            },
+            PoliceMapView: {
+                content: ({ goTo }) => (
+                    <>
+                        <Passage>
+                            <p>The map shows wealthy neighborhoods with low reporting, and racialized neighborhoods with dense clusters of pins. A digital dashboard predicts "hotspots" for next week.</p>
+                        </Passage>
+                        <Button onClick={() => goTo("PoliceChoicePredictive")}>Lean on data and predictive 'hotspots'</Button>
+                        <Button onClick={() => goTo("PoliceChoiceDiscipline")}>Lean on foot patrols and local presence</Button>
+                        <Button onClick={() => goTo("PoliceChoiceQuestionData")}>Question the categories behind the data</Button>
+                    </>
+                )
+            },
+            PoliceChoicePredictive: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, controlWeight: v.controlWeight + 2, biopoliticsWeight: v.biopoliticsWeight + 1, trustInPolicing: v.trustInPolicing + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You prioritize the predictive dashboard. Algorithms highlight blocks based on past arrests. Soon, patrol cars trace the same rectangles day after day.</p>
+                                <p>The loop is closed: surveillance produces data, data produces hotspots, hotspots justify more surveillance.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("PoliceDebrief")}>Debrief on Control</Button>
+                        </>
+                    );
+                }
+            },
+            PoliceChoiceDiscipline: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, disciplineWeight: v.disciplineWeight + 2, trustInPolicing: v.trustInPolicing + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You choose foot patrols. Officers become moving sensors. Their bodies are drilled into reliable components of the urban grid, punctuated by roll calls and quotas.</p>
+                                <p>This is the disciplinary circuit: routines that render space and people visible through constant presence.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("PoliceDebrief")}>Debrief on Discipline</Button>
+                        </>
+                    );
+                }
+            },
+            PoliceChoiceQuestionData: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, biopoliticsWeight: v.biopoliticsWeight + 2, skepticismOfPolicing: v.skepticismOfPolicing + 2})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You ask who gets recorded and who doesn't. You realize poverty and race make some people far more visible to the circuit than others.</p>
+                                <p>The system doesn't just manage crime; it manages populations statistically.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("PoliceDebrief")}>Debrief on Biopolitics</Button>
+                        </>
+                    );
+                }
+            },
+            PoliceDebrief: {
+                content: ({ vars, goTo }) => (
+                    <>
+                        <Passage>
+                            <p>You return to the workshop table. The facilitator projects a simplified diagram of the policing circuit.</p>
+                            <p className="text-cyan-200">
+                                {vars.controlWeight > vars.disciplineWeight ? 
+                                    "You focused on control: modulating movement and risk distributions without needing to reshape subjects directly." :
+                                    "You focused on discipline: bodies drilled into routines that render certain spaces perpetually visible."}
+                            </p>
+                        </Passage>
+                        <Button onClick={() => goTo("WorkshopHub")}>Choose another chair</Button>
+                    </>
+                )
+            },
+
+            // --- AUTOMOBILITY BRANCH ---
+            AutomobilityHubIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, automobilityScenarioVisited: true})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You sit in the <Highlight>Automobility</Highlight> chair. On the screen, ancient chariot races at the Circus Maximus overlay modern NASCAR tracks and Uber heatmaps.</p>
+                                <p className="italic text-slate-400">“From chariots to driverless fleets, circuits of mobility have been laboratories for governing circulation.”</p>
+                            </Passage>
+                            <Button onClick={() => goTo("AutoCommuteIntro")}>Focus on the commute</Button>
+                            <Button onClick={() => goTo("AutoDriverlessIntro")}>Focus on driverless futures</Button>
+                        </>
+                    );
+                }
+            },
+            AutoCommuteIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, automobilityPrivWeight: v.automobilityPrivWeight + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You observe the postwar suburb: "mobile privatization." A private bubble (the car) moves through society, synchronized by highway flows and television schedules.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("AutoAppMobility")}>Move to app-based mobility</Button>
+                        </>
+                    );
+                }
+            },
+            AutoAppMobility: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, automobilityFlowWeight: v.automobilityFlowWeight + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>The present: navigation systems tell drivers where to go. Occupants are insulated from the road, fixed in a transmission of personalized data and media.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("AutoDriverlessIntro")}>Examine driverless tech</Button>
+                        </>
+                    );
+                }
+            },
+            AutoDriverlessIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, automobilityTechnoFixWeight: v.automobilityTechnoFixWeight + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>The empty driver’s seat. AI optimizes routes and minimizes congestion. The car becomes a node in a city-wide programmable circuit.</p>
+                                <p>Who is the subject here? A user whose attention is harvested as they circulate.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("WorkshopHub")}>Return to Hub</Button>
+                        </>
+                    );
+                }
+            },
+
+            // --- SOLDIER BRANCH ---
+            SoldierHubIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, soldierScenarioVisited: true})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You take the <Highlight>Soldier/Signaling</Highlight> chair. A map of a Civil War battlefield appears, overlaid with lines of sight and signal stations.</p>
+                                <p className="italic text-slate-400">“We’ll look at how a soldier becomes a medium in a signaling circuit.”</p>
+                            </Passage>
+                            <Button onClick={() => goTo("SignalHillIntro")}>Begin at a signal station</Button>
+                            <Button onClick={() => goTo("TelegraphTentIntro")}>Enter the telegraph tent</Button>
+                        </>
+                    );
+                }
+            },
+            SignalHillIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, soldierDocilityWeight: v.soldierDocilityWeight + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>On a hilltop, you direct artillery via flag signals. The flagman repeats your code mechanically—a human relay. Training turns the body into a docile component of the circuit.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("SoldierHubIntro")}>Explore more tech</Button>
+                        </>
+                    );
+                }
+            },
+            TelegraphTentIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, soldierAutomationWeight: v.soldierAutomationWeight + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>Inside the tent, you see the Beardslee magneto-electric telegraph. It aims for "telecommand"—dialing letters that machines encode/decode, bypassing the vulnerability of human bodies.</p>
+                                <p>But the machine falters in the field. Automation here is aspirational—pushing toward disembodied command, yet tied to the material limits of the wire.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("WorkshopHub")}>Return to Hub</Button>
+                        </>
+                    );
+                }
+            },
+
+            // --- MADNESS BRANCH ---
+            MadnessHubIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, madnessScenarioVisited: true})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>You sit in the <Highlight>Madness / Screening</Highlight> chair. A timeline zooms from eyeglasses to Google Glass and biometric wearables.</p>
+                                <p className="italic text-slate-400">“How technologies meant to correct and guide become circuits that automate the management of ‘madness’.”</p>
+                            </Passage>
+                            <Button onClick={() => goTo("MadnessEyeglassesIntro")}>Start with eyeglasses</Button>
+                            <Button onClick={() => goTo("MadnessWearableIntro")}>Jump to wearables</Button>
+                        </>
+                    );
+                }
+            },
+            MadnessEyeglassesIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, madnessNormalizingWeight: v.madnessNormalizingWeight + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>Lenses correct vision to a norm. Mechanical screens—sieve, filter, gate—sort bodies into fit or unfit for work and war.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("MadnessWearableIntro")}>Next: Wearables</Button>
+                        </>
+                    );
+                }
+            },
+            MadnessWearableIntro: {
+                content: ({ setVars, goTo }) => {
+                    useEffect(() => setVars(v => ({...v, madnessDataficationWeight: v.madnessDataficationWeight + 1, madnessAutomationWeight: v.madnessAutomationWeight + 1})), []);
+                    return (
+                        <>
+                            <Passage>
+                                <p>The "sensor society." Smartphones track heart rate, sleep, and mood. Affective life is folded into a feedback loop of nudges and metrics.</p>
+                                <p>Madness isn't just in the head; it's a profile inferred from traces across the circuit.</p>
+                            </Passage>
+                            <Button onClick={() => goTo("WorkshopHub")}>Return to Hub</Button>
+                        </>
+                    );
+                }
+            },
+
+            // --- FINAL SYNTHESIS ---
+            FinalSynthesis: {
+                content: ({ vars, goTo }) => {
+                    return (
+                        <>
+                            <Passage>
+                                <p className="text-2xl font-bold text-cyan-500 mb-6">Final Synthesis</p>
+                                <p>You've navigated the circuits. The facilitator overlays the diagrams.</p>
+                                <div className="space-y-4 p-6 glass rounded-xl border-l-4 border-cyan-500">
+                                    <p className="text-slate-200">
+                                        You have explored {vars.soldierScenarioVisited && "Soldier Signaling, "}{vars.policeScenarioVisited && "Predictive Policing, "}{vars.automobilityScenarioVisited && "Automobility, "}{vars.madnessScenarioVisited && "Screening Logic"}.
+                                    </p>
+                                    <p>The "Prison House of the Circuit" is not an enclosure of walls, but of <Highlight>flows and topological modulations.</Highlight></p>
+                                    <p className="italic text-slate-400">
+                                        {vars.controlWeight > vars.disciplineWeight ? 
+                                            "Your path emphasized Control: the modulation of movement and the governance of populations through risk-profiles." : 
+                                            "Your path emphasized Discipline: the drilling of bodies to act as reliable media components within the apparatus."}
+                                    </p>
+                                </div>
+                            </Passage>
+                            <Button onClick={() => goTo("WorkshopSetup")}>Begin Workshop Again</Button>
+                        </>
+                    );
+                }
+            }
+        };
+
+        const App = () => {
+            const [currentPassage, setCurrentPassage] = useState("WorkshopSetup");
+            const [vars, setVars] = useState(INITIAL_STATE);
+            const [isFading, setIsFading] = useState(false);
+
+            const goTo = (id) => {
+                setIsFading(true);
+                setTimeout(() => {
+                    setCurrentPassage(id);
+                    setIsFading(false);
+                    window.scrollTo(0, 0);
+                }, 150);
+            };
+
+            const PassageComponent = STORY[currentPassage]?.content;
+
+            return (
+                <div className="min-h-screen flex items-center justify-center py-12 px-4 selection:bg-cyan-500/30">
+                    <div className="max-w-3xl w-full glass p-8 md:p-14 rounded-2xl shadow-2xl">
+                        <header className="mb-12 flex justify-between items-baseline border-b border-slate-800 pb-6">
+                            <h1 className="text-3xl font-bold mono uppercase tracking-widest text-cyan-500">Prison House of the Circuit</h1>
+                            <span className="mono text-[10px] text-slate-500 uppercase tracking-widest">MG-Workshop v1.0</span>
+                        </header>
+
+                        <main className={`transition-all duration-300 ${isFading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+                            {PassageComponent ? (
+                                <PassageComponent goTo={goTo} vars={vars} setVars={setVars} />
+                            ) : (
+                                <div className="text-red-500 mono">Circuit Failure: Passage "{currentPassage}" not found.</div>
+                            )}
+                        </main>
+
+                        <footer className="mt-16 pt-6 border-t border-slate-800 text-[10px] text-slate-600 mono flex justify-between uppercase">
+                            <span>Sovereignty // Discipline // Control</span>
+                            <span>{currentPassage}</span>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
